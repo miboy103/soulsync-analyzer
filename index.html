@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soulmate Compatibility Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a0f1a 0%, #2d1a2d 50%, #1a1a2e 100%);
+            color: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .question-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(220, 38, 38, 0.5);
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.15);
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+            border-color: rgba(220, 38, 38, 0.3);
+            background: rgba(255, 255, 255, 0.03);
+            color: #f0f0f0;
+        }
+
+        .option-btn:hover {
+            transform: translateX(4px);
+            border-color: rgba(220, 38, 38, 0.6);
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            border-color: #dc2626;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .gradient-header {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .accent-red {
+            color: #f87171;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            transition: all 0.3s ease;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(220, 38, 38, 0.3);
+        }
+
+        .button-primary:active {
+            transform: translateY(0);
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(153, 27, 27, 0.1));
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .progress-bar {
+            background: rgba(220, 38, 38, 0.3);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #dc2626, #f87171);
+        }
+
+        input[type="range"] {
+            accent-color: #dc2626;
+        }
+
+        textarea {
+            background: rgba(255, 255, 255, 0.03) !important;
+            color: #f0f0f0 !important;
+            border-color: rgba(220, 38, 38, 0.3) !important;
+        }
+
+        textarea:focus {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+        }
+
+        textarea::placeholder {
+            color: rgba(240, 240, 240, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen py-12 px-4">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12 fade-in">
+                <h1 class="text-5xl font-bold mb-4 gradient-header">Soulmate Compatibility</h1>
+                <p class="text-lg text-gray-400">Discover your ideal partner personality through thoughtful self-reflection</p>
+            </div>
+
+            <!-- Quiz Section -->
+            <div id="quizSection" class="fade-in">
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm font-medium text-gray-400" id="questionCounter">Question 1 of 10</span>
+                        <div class="w-48 h-2 progress-bar rounded-full overflow-hidden">
+                            <div id="progressBar" class="h-full progress-fill rounded-full transition-all duration-300" style="width: 10%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="quizForm" class="space-y-8">
+                    <!-- Q1: Stress Response -->
+                    <div class="question-card p-6 rounded-lg">
+                        <h2 class="text-xl font-semibold mb-4 text-white">How do you usually react when you are upset or stressed?</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border-2 rounded-lg cursor-pointer option-btn">
+                                <input type="radio" name="q1" value="Talk to someone" class="mr-3" required>
+                                <span>Talk to someone about it</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 rounded-lg cursor-pointer option-btn">
+                                <input type="radio" name="q1" value="Spend time alone" class="mr-3" required>
+                                <span>Spend time alone to think</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 rounded-lg cursor-pointer option-btn">
+                                <input type="radio" name="q1" value="Distract myself" class="mr-3" required>
+                                <span>Distract myself with activities</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 rounded-lg cursor-pointer option-btn">
+                                <input type="radio" name="q1" value="Struggle to express" class="mr-3" required>
+                                <span>I struggle to express how I feel</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q2: What Matters Most -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">What matters most to you in a relationship?</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q2" value="Trust" class="mr-3">
+                                <span>Trust</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q2" value="Communication" class="mr-3">
+                                <span>Communication</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q2" value="Loyalty" class="mr-3">
+                                <span>Loyalty</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q2" value="Emotional support" class="mr-3">
+                                <span>Emotional support</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q2" value="Shared goals" class="mr-3">
+                                <span>Shared goals</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q3: Conflict Resolution -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">How do you prefer to resolve conflicts with someone you care about?</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q3" value="Calm discussion" class="mr-3" required>
+                                <span>Calm discussion</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q3" value="Cool off first" class="mr-3" required>
+                                <span>Taking time to cool off first</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q3" value="Avoid arguments" class="mr-3" required>
+                                <span>Avoiding arguments</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q3" value="Direct confrontation" class="mr-3" required>
+                                <span>Directly confronting the issue</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q4: How Friends Describe You -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">How would your friends describe your personality?</h2>
+                        <textarea name="q4" placeholder="Describe yourself in a few words or sentences..." class="w-full p-3 border-2 border-red-900 border-opacity-30 rounded-lg focus:border-red-500 focus:outline-none" rows="3" required></textarea>
+                    </div>
+
+                    <!-- Q5: Similar or Complementary -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">Do you prefer a partner who is more similar to you or someone who balances your personality?</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q5" value="Similar to me" class="mr-3" required>
+                                <span>Similar to me</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q5" value="Balances my personality" class="mr-3" required>
+                                <span>Someone who balances my personality</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q5" value="A mix of both" class="mr-3" required>
+                                <span>A mix of both</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q6: How You Show Love -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">How do you usually show love to people you care about?</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q6" value="Words of affirmation" class="mr-3">
+                                <span>Words of affirmation</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q6" value="Quality time" class="mr-3">
+                                <span>Spending quality time</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q6" value="Helping with things" class="mr-3">
+                                <span>Helping them with things</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q6" value="Gifts" class="mr-3">
+                                <span>Giving gifts</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="checkbox" name="q6" value="Physical affection" class="mr-3">
+                                <span>Physical affection</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q7: Admired Quality -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">What is one quality you admire most in a partner?</h2>
+                        <textarea name="q7" placeholder="Describe the quality you value..." class="w-full p-3 border-2 border-red-900 border-opacity-30 rounded-lg focus:border-red-500 focus:outline-none" rows="3" required></textarea>
+                    </div>
+
+                    <!-- Q8: Independence -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">How important is independence in your relationship?</h2>
+                        <input type="range" name="q8" min="1" max="10" value="5" class="w-full h-2 bg-slate-300 rounded-lg appearance-none cursor-pointer" id="independenceSlider" required>
+                        <div class="flex justify-between text-sm text-gray-400 mt-2">
+                            <span>Not important</span>
+                            <span id="sliderValue">5</span>
+                            <span>Very important</span>
+                        </div>
+                    </div>
+
+                    <!-- Q9: Communication -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">What kind of communication makes you feel most understood?</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q9" value="Deep conversations" class="mr-3" required>
+                                <span>Deep, meaningful conversations</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q9" value="Direct and honest" class="mr-3" required>
+                                <span>Direct and honest communication</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q9" value="Listening and empathy" class="mr-3" required>
+                                <span>Active listening and empathy</span>
+                            </label>
+                            <label class="flex items-center p-3 border-2 border-red-900 border-opacity-30 rounded-lg cursor-pointer option-btn hover:border-red-500">
+                                <input type="radio" name="q9" value="Light and humorous" class="mr-3" required>
+                                <span>Light and humorous interactions</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q10: What You Cannot Tolerate -->
+                    <div class="question-card  p-6 rounded-lg shadow-sm">
+                        <h2 class="text-xl font-semibold mb-4 text-white">What is one behavior in a relationship that you cannot tolerate?</h2>
+                        <textarea name="q10" placeholder="Describe a behavior that is unacceptable to you..." class="w-full p-3 border-2 border-red-900 border-opacity-30 rounded-lg focus:border-red-500 focus:outline-none" rows="3" required></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex gap-4">
+                        <button type="submit" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-all duration-200 transform hover:scale-105">
+                            Generate My Soulmate Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden fade-in">
+                <button onclick="location.reload()" class="mb-6 text-red-400 hover:text-red-300 font-medium flex items-center gap-2">
+                    ← Start Over
+                </button>
+
+                <!-- Personality Summary -->
+                <div class="result-header p-8 rounded-lg shadow-sm mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-4">Your Personality Summary</h2>
+                    <p id="personalitySummary" class="text-lg text-gray-300 leading-relaxed"></p>
+                </div>
+
+                <!-- Relationship Style -->
+                <div class="result-card p-8 rounded-lg mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-4">Your Relationship Style</h2>
+                    <p id="relationshipStyle" class="text-lg text-gray-300 leading-relaxed"></p>
+                </div>
+
+                <!-- Ideal Soulmate -->
+                <div class="result-card p-8 rounded-lg mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-6">Your Ideal Soulmate Character</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-red-400 mb-2">Personality Traits</h3>
+                            <p id="soulmatePesonalityTraits" class="text-gray-300 leading-relaxed"></p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-red-400 mb-2">Emotional Qualities</h3>
+                            <p id="emotionalQualities" class="text-gray-300 leading-relaxed"></p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-red-400 mb-2">Communication Style</h3>
+                            <p id="communicationStyle" class="text-gray-300 leading-relaxed"></p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-red-400 mb-2">Shared Values</h3>
+                            <p id="sharedValues" class="text-gray-300 leading-relaxed"></p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-red-400 mb-2">How They Support You</h3>
+                            <p id="support" class="text-gray-300 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Why This Matches -->
+                <div class="result-header p-8 rounded-lg shadow-sm border">
+                    <h2 class="text-2xl font-bold text-white mb-4">Why This Personality Matches You</h2>
+                    <p id="whyMatches" class="text-lg text-gray-300 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
